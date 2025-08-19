@@ -1,0 +1,30 @@
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+generator client { provider = "prisma-client-js" }
+
+model RawItem {
+  id           String  @id @default(cuid())
+  source       String
+  url          String
+  contentType  String?
+  payload      Bytes?   // сырой файл/ответ (по желанию)
+  text         String?  // распарсенный текст/таблица в JSON string
+  fetchedAt    DateTime @default(now())
+  publishedAt  DateTime?
+  sha256       String   @unique
+}
+
+model FactRecord {
+  id           String  @id
+  source       String
+  indicator    String
+  region       String
+  period       String
+  value        Float
+  unit         String
+  meta         Json?
+  fetchedAt    DateTime
+  publishedAt  DateTime?
+
+  @@index([source, indicator, region, period])
+  @@unique([source, indicator, region, period, indicator, unit])
+}
