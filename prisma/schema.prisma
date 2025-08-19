@@ -20,3 +20,18 @@ model Fact {
   @@unique([source, indicator, region, period])
   @@index([indicator, region, period])
 }
+
+model Article {
+  id           String   @id @default(cuid())
+  region       String
+  period       String
+  template     String
+  title        String
+  bullets      Json     // string[]
+  conclusion   String
+  sliceHash    String
+  sources      Json     // string[] URLs
+  createdAt    DateTime @default(now())
+
+  @@unique([region, period, sliceHash], name: "uniq_article_key")
+}

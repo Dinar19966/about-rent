@@ -1,23 +1,19 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AppController } from './app.controller';
-import { PrismaService } from './db/prisma.service';
-import { FactsRepository } from './db/facts.repository';
-import { SourceRegistry } from './config/sources.registry';
-import { IngestJob } from './ingest/ingest.job';
-import { OpenRouterService } from './llm/openrouter.service';
-import { WriteArticleService } from './llm/write-article.service';
+import { HttpModule } from '@nestjs/axios';
+import { FactsModule } from './facts/facts.module.js';
+import { IngestModule } from './ingest/ingest.module.js';
+import { WriteModule } from './write/write.module.js';
 
 @Module({
-  imports: [ScheduleModule.forRoot()],
-  controllers: [AppController],
-  providers: [
-    PrismaService,
-    FactsRepository,
-    SourceRegistry,
-    IngestJob,
-    OpenRouterService,
-    WriteArticleService,
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
+    HttpModule,
+    FactsModule,
+    IngestModule,
+    WriteModule,
   ],
 })
 export class AppModule {}
