@@ -1,12 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Query } from "@nestjs/common";
+import { WriteArticleService } from "./llm/write-article.service";
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly writer: WriteArticleService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get("brief")
+  async brief(@Query("region") region="RU-MOW", @Query("period") period="2025-07") {
+    return this.writer.writeRegionBrief(region, period);
   }
 }

@@ -9,7 +9,6 @@ export class IngestJob {
   private readonly log = new Logger(IngestJob.name);
   constructor(private readonly repo: FactsRepository, private readonly sources: SourceRegistry) {}
 
-  // можно сменить расписание
   @Cron(CronExpression.EVERY_DAY_AT_4AM)
   async run() {
     for (const rule of this.sources.all()) {
@@ -19,15 +18,10 @@ export class IngestJob {
           const raw = await fetchNarrow(item, rule);
           const facts = await rule.mapper(raw);
           const unique = await this.repo.dedup(facts);
-          if (unique.length) {
-            await this.repo.save(unique);
-            this.log.log(`[${rule.id}] saved ${unique.length}`);
-          } else {
-            this.log.log(`[${rule.id}] nothing new`);
-          }
+          if (unique.length) { await this.repo.save(unique); this.log.log(`[${rule.id}] +${unique.length}`); }
         }
       } catch (e) {
-        this.log.error(`[${rule.id}] failed: ${String((e as any).message || e)}`);
+        this.log.error(`[${rule.id}] ${String((e as any).message || e)}`);
       }
     }
   }

@@ -18,7 +18,7 @@ export class SourceRegistry {
   private readonly rules: SourceRule[] = [];
 
   constructor() {
-    // пример CSV-источника (заглушка под учебку)
+    // demo-правило под CSV (замени на реальное)
     this.rules.push({
       id: "CIAN_MARKET_CSV",
       discovery: { type: "DIRECT", url: "https://example.com/market.csv" },
